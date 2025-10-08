@@ -22,10 +22,17 @@ const products = productsFromServer.map(p => {
 
 export const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const visibleProducts =
+  const [query, setQuery] = useState('');
+
+  const preresult =
     selectedUserId === null
       ? products
       : products.filter(p => p.user.id === selectedUserId);
+
+  const normilized = query.trim().toLowerCase();
+  const visibleProducts = normilized
+    ? preresult.filter(p => p.name.toLowerCase().includes(normilized))
+    : preresult;
 
   return (
     <div className="section">
@@ -72,21 +79,25 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {query && (
+                  <span className="icon is-right">
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setQuery('')}
+                    />
+                  </span>
+                )}
               </p>
             </div>
 
